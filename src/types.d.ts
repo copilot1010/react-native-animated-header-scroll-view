@@ -52,6 +52,12 @@ type AnimatedViewProps = {
    * Image styles
    */
   imageStyle?: StyleProp<ImageStyle>;
+
+  /**
+   * on scroll positionListener
+   */
+  onScrollPositionChange?: (y: number) => void;
+
 };
 
 export type AnimatedScrollViewProps = AnimatedViewProps & ScrollViewProps;

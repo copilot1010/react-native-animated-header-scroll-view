@@ -22,6 +22,7 @@ export const AnimatedScrollView = forwardRef<
       disableScale,
       children,
       imageStyle,
+      onScrollPositionChange,
       ...props
     }: AnimatedScrollViewProps,
     ref
@@ -30,7 +31,7 @@ export const AnimatedScrollView = forwardRef<
     const headerNavHeight = topBarHeight || HEADER_HEIGHT;
     const headerElevation = topBarElevation || 0;
     const [scroll, onScroll, scale, translateYDown, translateYUp] =
-      useAnimateScrollView(imageHeight, disableScale);
+      useAnimateScrollView(imageHeight, disableScale, onScrollPositionChange);
 
     return (
       <>
