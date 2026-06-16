@@ -3,14 +3,30 @@ import { StyleSheet, Animated } from 'react-native';
 import { useAnimateNavbar } from '../hooks/useAnimateNavbar';
 import type { AnimatedNavbarProps } from '../types';
 
+// Helper to clamp opacity for Hermes
+const safeOpacity = (
+  value: Animated.AnimatedInterpolation<any> | number | undefined
+): number | Animated.AnimatedInterpolation<any> => {
+  if (value === undefined) return 1; // fallback
+  if (typeof value === 'number') return Math.max(0, Math.min(1, value));
+  if ('interpolate' in value) {
+    return value.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    });
+  }
+  return 1; // fallback
+};
+
 const AnimatedNavbar = ({
-  scroll,
-  imageHeight,
-  OverflowHeaderComponent,
-  TopNavbarComponent,
-  headerHeight,
-  headerElevation,
-}: AnimatedNavbarProps) => {
+                          scroll,
+                          imageHeight,
+                          OverflowHeaderComponent,
+                          TopNavbarComponent,
+                          headerHeight,
+                          headerElevation,
+                        }: AnimatedNavbarProps) => {
   const [headerOpacity, overflowHeaderOpacity] = useAnimateNavbar(
     scroll,
     imageHeight,
@@ -23,9 +39,9 @@ const AnimatedNavbar = ({
         style={[
           styles.container,
           {
-            zIndex: headerOpacity,
-            height: headerHeight,
-            opacity: headerOpacity,
+            zIndex: 1, // <--- always integer!
+            height: Math.round(headerHeight),
+            opacity: safeOpacity(headerOpacity),
             elevation: headerElevation,
           },
         ]}
@@ -37,9 +53,9 @@ const AnimatedNavbar = ({
           styles.container,
           styles.overflowHeader,
           {
-            zIndex: overflowHeaderOpacity,
-            height: headerHeight,
-            opacity: overflowHeaderOpacity,
+            zIndex: 0, // <--- always integer!
+            height: Math.round(headerHeight),
+            opacity: safeOpacity(overflowHeaderOpacity),
           },
         ]}
       >
